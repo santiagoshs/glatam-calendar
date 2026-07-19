@@ -1,0 +1,16 @@
+{
+  "name": "vanilla-demo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@glatam/calendar-ui": "^1.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.1.4"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@glatam/calendar-core",
+  "version": "1.0.0",
+  "description": "Lógica pura del calendario @glatam/calendar",
+  "type": "module",
+  "author": "Santiago Hernández Saldarriaga",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.3.1"
+  }
+}
