@@ -1,6 +1,6 @@
 {
   "name": "@glatam/calendar-ui",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Componente web UI para el calendario @glatam/calendar",
   "type": "module",
   "author": "Santiago Hernández Saldarriaga",
@@ -14,6 +14,9 @@
       "import": "./dist/glatam-calendar.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/santiagoshs/glatam-calendar.git"
@@ -33,10 +36,11 @@
   ],
   "scripts": {
     "build": "vite build",
+    "prepublishOnly": "npm run build",
     "dev": "vite"
   },
   "dependencies": {
-    "@glatam/calendar-core": "^1.0.2",
+    "@glatam/calendar-core": "^1.0.3",
     "lit": "^3.1.2"
   },
   "devDependencies": {
