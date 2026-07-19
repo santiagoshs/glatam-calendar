@@ -36,7 +36,7 @@ export class GlatamCalendar extends LitElement {
   @state() private modalIsRange = false; @state() private modalExistingRule: BlockingRule | null = null;
 
   firstUpdated() { this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches; this.localRules = [...this.rules]; }
-  willUpdate(changedProps: Map<string, any>) { if (changedProps.has('rules') && this.rules.length > 0 && this.localRules.length === 0) this.localRules = [...this.rules]; }
+  willUpdate(changedProps: Map<string, any>) { if (changedProps.has('rules')) this.localRules = [...(this.rules || [])]; }
   updated(changedProps: Map<string, any>) { if (changedProps.has('darkMode')) this.classList.toggle('dark-mode', this.darkMode); }
 
   private handlePrev() {
