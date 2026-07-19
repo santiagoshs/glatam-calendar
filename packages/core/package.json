@@ -1,12 +1,27 @@
 {
   "name": "@glatam/calendar-core",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Lógica pura del calendario @glatam/calendar",
   "type": "module",
   "author": "Santiago Hernández Saldarriaga",
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/santiagoshs/glatam-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/santiagoshs/glatam-calendar/issues"
+  },
+  "homepage": "https://github.com/santiagoshs/glatam-calendar#readme",
+  "keywords": [
+    "calendar-core",
+    "booking-logic",
+    "availability-calculation",
+    "timezone-engine",
+    "scheduler-logic"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run"

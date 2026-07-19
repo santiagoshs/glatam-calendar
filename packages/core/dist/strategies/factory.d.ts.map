@@ -1,1 +1,0 @@
-{"version":3,"file":"factory.d.ts","sourceRoot":"","sources":["../../src/strategies/factory.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gBAAgB,EAAE,MAAM,aAAa,CAAC;AAC/C,OAAO,EAAE,gBAAgB,EAAE,MAAM,yBAAyB,CAAC;AAI3D,qBAAa,uBAAuB;IAClC,OAAO,CAAC,MAAM,CAAC,UAAU,CAGvB;IAEF;;OAEG;IACH,MAAM,CAAC,WAAW,CAAC,IAAI,EAAE,gBAAgB,GAAG,gBAAgB;CAO7D"}

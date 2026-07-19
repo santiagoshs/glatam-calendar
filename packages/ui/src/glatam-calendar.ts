@@ -22,29 +22,18 @@ const DEFAULT_SLOTS: TimeSlot[] = [
 export class GlatamCalendar extends LitElement {
   static styles = [variablesStyles, calendarStyles];
 
-  @property({ type: String }) role = 'provider';
-  @property({ type: String, reflect: true }) size = 'medium';
-  @property({ type: String }) view: 'month' | 'week' | 'day' = 'month';
-  @property({ type: String }) locale = 'es';
-  @property({ type: Number }) startOfWeekDay = 0;
-  @property({ type: Array }) rules: BlockingRule[] = [];
-  @property({ type: Array }) selectedDates: string[] = [];
-  @property({ type: Object }) selectedRange: { dateString: string; start: string; end: string } | null = null;
+  @property({ type: String }) role = 'provider'; @property({ type: String, reflect: true }) size = 'medium';
+  @property({ type: String }) view: 'month' | 'week' | 'day' = 'month'; @property({ type: String }) locale = 'es';
+  @property({ type: Number }) startOfWeekDay = 0; @property({ type: Array }) rules: BlockingRule[] = [];
+  @property({ type: Array }) selectedDates: string[] = []; @property({ type: Object }) selectedRange: { dateString: string; start: string; end: string } | null = null;
   @property({ type: String }) hostTimezone = 'America/Bogota'; @property({ type: String }) activeTimezone = 'local';
-  @property({ type: Array }) slots: TimeSlot[] = DEFAULT_SLOTS;
-  @property({ type: String }) minDate = ''; @property({ type: String }) maxDate = '';
-  @property({ type: Boolean }) showNeighboringMonth = true;
-  @property({ attribute: false }) tileClassName: ((data: { date: Date; dateString: string }) => string) | null = null;
+  @property({ type: Array }) slots: TimeSlot[] = DEFAULT_SLOTS; @property({ type: String }) minDate = ''; @property({ type: String }) maxDate = '';
+  @property({ type: Boolean }) showNeighboringMonth = true; @property({ attribute: false }) tileClassName: ((data: { date: Date; dateString: string }) => string) | null = null;
 
-  @state() private activeDate = new Date();
-  @state() private localRules: BlockingRule[] = [];
-  @state() private darkMode = false;
-  @state() private modalOpen = false;
-  @state() private modalDateString = '';
-  @state() private modalStartTime = '';
-  @state() private modalEndTime = '';
-  @state() private modalIsRange = false;
-  @state() private modalExistingRule: BlockingRule | null = null;
+  @state() private activeDate = new Date(); @state() private localRules: BlockingRule[] = [];
+  @state() private darkMode = false; @state() private modalOpen = false;
+  @state() private modalDateString = ''; @state() private modalStartTime = ''; @state() private modalEndTime = '';
+  @state() private modalIsRange = false; @state() private modalExistingRule: BlockingRule | null = null;
 
   firstUpdated() { this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches; this.localRules = [...this.rules]; }
   willUpdate(changedProps: Map<string, any>) { if (changedProps.has('rules') && this.rules.length > 0 && this.localRules.length === 0) this.localRules = [...this.rules]; }
@@ -77,6 +66,10 @@ export class GlatamCalendar extends LitElement {
 
   private handleRangeSelect(e: CustomEvent<{ dateString: string; start: string; end: string }>) {
     const { dateString, start, end } = e.detail, offset = this.activeTimezone === 'local' ? getTimezoneOffsetDiff(this.activeDate, this.hostTimezone, 'local') : 0;
+    const todayStr = new Date().toISOString().split('T')[0];
+    const limitMinDate = this.minDate || (this.role === 'buyer' ? todayStr : '');
+    if (this.role === 'buyer' && limitMinDate && dateString < limitMinDate) return;
+
     const displaySlots = this.getDisplaySlots(offset), startIdx = displaySlots.findIndex(s => s.start === start), endIdx = displaySlots.findIndex(s => s.end === end);
     const hostStart = this.slots[startIdx]?.start || start, hostEnd = this.slots[endIdx]?.end || end;
     if (this.role === 'buyer') {
@@ -87,8 +80,12 @@ export class GlatamCalendar extends LitElement {
     this.openModal(dateString, hostStart, hostEnd, true, null);
   }
 
-  private handleSlotClick(e: CustomEvent<{ dateString: string; slot: TimeSlot }>) {
+  private handleSlotClick(e: CustomEvent<{ dateString: string; slot: TimeSlot & { isBlocked?: boolean } }>) {
     const { dateString, slot } = e.detail, date = new Date(dateString + 'T00:00:00'), offset = this.activeTimezone === 'local' ? getTimezoneOffsetDiff(this.activeDate, this.hostTimezone, 'local') : 0;
+    const todayStr = new Date().toISOString().split('T')[0];
+    const limitMinDate = this.minDate || (this.role === 'buyer' ? todayStr : '');
+    if (this.role === 'buyer' && (slot.isBlocked || (limitMinDate && dateString < limitMinDate))) return;
+
     const displaySlots = this.getDisplaySlots(offset), idx = displaySlots.findIndex(s => s.start === slot.start), hostSlot = this.slots[idx] || slot;
     if (this.role === 'buyer') {
       this.selectedRange = { dateString, start: slot.start, end: slot.end };
@@ -177,7 +174,7 @@ export class GlatamCalendar extends LitElement {
 
       <div class="calendar-body">
         ${this.view === 'month'
-          ? html`<glatam-calendar-month-view .days=${generateMonthDays(y, m, this.localRules, this.slots, this.startOfWeekDay)} .locale=${this.locale} .startOfWeekDay=${this.startOfWeekDay} .role=${this.role} .size=${this.size} .minDate=${this.minDate} .maxDate=${this.maxDate} .showNeighboringMonth=${this.showNeighboringMonth} .tileClassName=${this.tileClassName} @day-select=${this.handleDaySelect}></glatam-calendar-month-view>`
+          ? html`<glatam-calendar-month-view .days=${generateMonthDays(y, m, this.localRules, this.slots, this.startOfWeekDay)} .locale=${this.locale} .startOfWeekDay=${this.startOfWeekDay} .role=${this.role} .size=${this.size} .minDate=${this.minDate || (this.role === 'buyer' ? new Date().toISOString().split('T')[0] : '')} .maxDate=${this.maxDate} .showNeighboringMonth=${this.showNeighboringMonth} .tileClassName=${this.tileClassName} @day-select=${this.handleDaySelect}></glatam-calendar-month-view>`
           : this.view === 'week'
           ? html`<glatam-calendar-week-view .days=${mapDays(generateWeekDays(this.activeDate, this.localRules, this.slots, this.startOfWeekDay))} .slots=${displaySlots} .locale=${this.locale} .selectedRange=${this.selectedRange} .role=${this.role} @range-select=${this.handleRangeSelect} @slot-click=${this.handleSlotClick}></glatam-calendar-week-view>`
           : html`<glatam-calendar-day-view .day=${mapDays(generateWeekDays(this.activeDate, this.localRules, this.slots, this.startOfWeekDay)).find(d => d.dateString === formatISODate(this.activeDate)) || null} .slots=${displaySlots} .locale=${this.locale} .selectedRange=${this.selectedRange} .role=${this.role} @range-select=${this.handleRangeSelect} @slot-click=${this.handleSlotClick}></glatam-calendar-day-view>`}

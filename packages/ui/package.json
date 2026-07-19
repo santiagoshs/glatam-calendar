@@ -1,6 +1,6 @@
 {
   "name": "@glatam/calendar-ui",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Componente web UI para el calendario @glatam/calendar",
   "type": "module",
   "author": "Santiago Hernández Saldarriaga",
@@ -14,12 +14,29 @@
       "import": "./dist/glatam-calendar.js"
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/santiagoshs/glatam-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/santiagoshs/glatam-calendar/issues"
+  },
+  "homepage": "https://github.com/santiagoshs/glatam-calendar#readme",
+  "keywords": [
+    "calendar",
+    "booking-system",
+    "lit-element",
+    "web-components",
+    "timezone-safety",
+    "availability-scheduler",
+    "ssr-compatible"
+  ],
   "scripts": {
     "build": "vite build",
     "dev": "vite"
   },
   "dependencies": {
-    "@glatam/calendar-core": "^1.0.0",
+    "@glatam/calendar-core": "^1.0.2",
     "lit": "^3.1.2"
   },
   "devDependencies": {

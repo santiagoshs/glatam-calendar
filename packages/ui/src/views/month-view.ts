@@ -62,7 +62,8 @@ export class GlatamCalendarMonthView extends LitElement {
   }
 
   private handleDayClick(day: CalendarDay) {
-    if (this.role === 'buyer' && day.isBlocked) return;
+    const isDisabled = (this.minDate && day.dateString < this.minDate) || (this.maxDate && day.dateString > this.maxDate);
+    if (this.role === 'buyer' && (day.isBlocked || isDisabled)) return;
     this.dispatchEvent(new CustomEvent('day-select', {
       detail: { dateString: day.dateString, isBlocked: day.isBlocked },
       bubbles: true, composed: true
