@@ -1,115 +1,115 @@
-# 📖 Guía de Referencia de la API: @glatam/calendar
+# 📖 API Reference Guide: @glatam/calendar
 
-Esta es la documentación técnica oficial de la suite `@glatam/calendar`. Diseñada bajo estándares modernos, minimalistas (estilo Apple) y de alto rendimiento.
-
----
-
-## 🔒 1. Estabilidad y Garantía de Producción
-
-La librería está lista para producción en e-commerce y planificadores corporativos mediante tres pilares:
-
-1.  **Pruebas Automatizadas**: Algoritmos de disponibilidad y colisiones horarias en `@glatam/calendar-core` cubiertos por tests unitarios en **Vitest**.
-2.  **Aislamiento Total (Shadow DOM)**: Utiliza encapsulación nativa a nivel del navegador, eliminando colisiones de CSS externas.
-3.  **Seguridad SSR (Server-Side Rendering)**: Compilado en ESM y CommonJS sin referencias directas a `window` o `document` a nivel de módulo. Compatible con **Next.js (App Router)**, **Nuxt 3**, **Astro** y **SvelteKit**.
+This is the official technical documentation for the `@glatam/calendar` suite. Designed under modern, minimalist (Apple-style), and high-performance standards.
 
 ---
 
-## 📦 2. Instalación (Installation)
+## 🔒 1. Production Stability & Guarantee
 
-Puedes instalar la suite usando tu gestor de paquetes favorito:
+The library is production-ready for mission-critical e-commerce and corporate schedulers through three key pillars:
+
+1.  **Automated Testing**: Availability engine, slot collision logic, and recurrence algorithms in `@glatam/calendar-core` are covered by unit tests in **Vitest**.
+2.  **Total Isolation (Shadow DOM)**: Uses native browser encapsulation. Global styles from your website will never alter the calendar, and calendar styles will never bleed out.
+3.  **SSR Compatibility**: Compiled in ESM and CommonJS variants without direct references to `window` or `document` at module level. Fully compatible with **Next.js (App Router)**, **Nuxt 3**, **Astro**, and **SvelteKit**.
+
+---
+
+## 📦 2. Installation
+
+You can install the suite using your favorite package manager:
 
 ```bash
-# Con npm
+# Using npm
 npm install @glatam/calendar-core @glatam/calendar-ui
 
-# Con yarn
+# Using yarn
 yarn add @glatam/calendar-core @glatam/calendar-ui
 
-# Con pnpm
+# Using pnpm
 pnpm add @glatam/calendar-core @glatam/calendar-ui
 ```
 
 ---
 
-## ⚙️ 3. Referencia de API: `<glatam-calendar>`
+## ⚙️ 3. API Reference: `<glatam-calendar>`
 
-El componente principal para la cuadrícula completa del calendario.
+The primary calendar component displaying the full grid.
 
-### Propiedades y Atributos (Props)
+### Properties and Attributes (Props)
 
-| Propiedad (JS) | Atributo (HTML) | Tipo | Por Defecto | Descripción |
+| JS Property | HTML Attribute | Type | Default | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `role` | `role` | `'provider' \| 'buyer'` | `'provider'` | `provider` permite editar disponibilidad; `buyer` deshabilita bloqueos y permite reservar slots. |
-| `view` | `view` | `'month' \| 'week' \| 'day'` | `'month'` | Establece la vista por defecto. |
-| `locale` | `locale` | `string` | `'es'` | Código de idioma (IETF tag) para formatear textos de forma nativa. |
-| `startOfWeekDay` | `start-of-week-day` | `number` | `0` | Primer día de la semana (`0` = Domingo, `1` = Lunes). |
-| `rules` | — | `BlockingRule[]` | `[]` | Array de reglas de bloqueo (ej. fines de semana o tareas). |
-| `slots` | — | `TimeSlot[]` | *(9am a 6pm)* | Array de bloques horarios disponibles en el día. |
-| `minDate` | `min-date` | `string` | `''` | Fecha mínima de selección (`YYYY-MM-DD`). |
-| `maxDate` | `max-date` | `string` | `''` | Fecha máxima de selección (`YYYY-MM-DD`). |
-| `showNeighboringMonth`| `show-neighboring-month`| `boolean` | `true` | Si es `false`, oculta los números del mes vecino. |
-| `hostTimezone` | `host-timezone` | `string` | `'America/Bogota'` | Timezone base del servidor o anfitrión de la experiencia. |
-| `activeTimezone` | `active-timezone` | `'host' \| 'local'` | `'local'` | `'local'` convierte la visualización horaria del grid a la hora local del dispositivo. |
-| `tileClassName` | — | `Function` | `null` | Callback `({ date, dateString }) => string` para añadir clases a celdas mensuales. |
+| `role` | `role` | `'provider' \| 'buyer'` | `'provider'` | `provider` allows editing availability; `buyer` disables blocked slots and enables client booking. |
+| `view` | `view` | `'month' \| 'week' \| 'day'` | `'month'` | Sets the active view. |
+| `locale` | `locale` | `string` | `'es'` | Locale code (IETF tag) for native header and date formatting. |
+| `startOfWeekDay` | `start-of-week-day` | `number` | `0` | First day of the week (`0` = Sunday, `1` = Monday). |
+| `rules` | — | `BlockingRule[]` | `[]` | Array of blocking rules (e.g., weekends, holidays). *JS only.* |
+| `slots` | — | `TimeSlot[]` | *(9am to 6pm)* | Array of daily operating hour slots. *JS only.* |
+| `minDate` | `min-date` | `string` | `''` | Minimum selectable date in `YYYY-MM-DD` format. |
+| `maxDate` | `max-date` | `string` | `''` | Maximum selectable date in `YYYY-MM-DD` format. |
+| `showNeighboringMonth`| `show-neighboring-month`| `boolean` | `true` | If `false`, hides neighboring month dates. |
+| `hostTimezone` | `host-timezone` | `string` | `'America/Bogota'` | Timezone of the host or experience venue. |
+| `activeTimezone` | `active-timezone` | `'host' \| 'local'` | `'local'` | `'local'` automatically shifts grid slots to the buyer's local time. |
+| `tileClassName` | — | `Function` | `null` | Callback `({ date, dateString }) => string` to add classes to monthly cells. |
 
-### Eventos (Events)
+### Events
 
-| Nombre | Datos en `event.detail` | Descripción |
+| Event Name | Detail Payload (`event.detail`) | Description |
 | :--- | :--- | :--- |
-| **`booking-selected`** | `{ dateString, start, end, hostStart, hostEnd }` | El comprador seleccionó un slot disponible. Devuelve la hora local del cliente y la del host. |
-| **`rules-changed`** | `{ rules: BlockingRule[] }` | El administrador guardó un bloqueo o tarea. |
-| **`date-selected`** | `{ dateString: string }` | Se presionó un día en la vista mensual. |
-| **`range-selected`** | `{ dateString: string, start: string, end: string }` | Se arrastró un rango en vistas semana/día. |
+| **`booking-selected`** | `{ dateString, start, end, hostStart, hostEnd }` | Fired when a buyer clicks an available slot. Outputs client local and host reference times. |
+| **`rules-changed`** | `{ rules: BlockingRule[] }` | Fired when the provider saves a block or task. |
+| **`date-selected`** | `{ dateString: string }` | Fired when a month cell is clicked. |
+| **`range-selected`** | `{ dateString: string, start: string, end: string }` | Fired when dragging a slot range in week/day views. |
 
 ---
 
-## ⚙️ 4. Referencia de API: `<glatam-calendar-mini>`
+## ⚙️ 4. API Reference: `<glatam-calendar-mini>`
 
-El componente de checkout rápido tipo popover.
+The inline checkout popup calendar component.
 
-### Propiedades y Atributos (Props)
+### Properties and Attributes (Props)
 
-| Propiedad (JS) | Atributo (HTML) | Tipo | Por Defecto | Descripción |
+| JS Property | HTML Attribute | Type | Default | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `role` | `role` | `'provider' \| 'buyer'` | `'buyer'` | Por defecto en modo comprador para selección rápida. |
-| `locale` | `locale` | `string` | `'es'` | Código de idioma regional. |
-| `rules` | — | `BlockingRule[]` | `[]` | Reglas de disponibilidad cargadas desde tu API. |
-| `slots` | — | `TimeSlot[]` | *(9am a 6pm)* | Horarios de atención diarios. |
-| `minDate` | `min-date` | `string` | `''` | Límite inferior de selección (`YYYY-MM-DD`). |
-| `maxDate` | `max-date` | `string` | `''` | Límite superior de selección (`YYYY-MM-DD`). |
-| `hostTimezone` | `host-timezone` | `string` | `'America/Bogota'` | Timezone de la sede original del anfitrión. |
-| `activeTimezone` | `active-timezone` | `'host' \| 'local'` | `'local'` | Si está en `'local'`, convierte los slots de hora al huso del cliente. |
+| `role` | `role` | `'provider' \| 'buyer'` | `'buyer'` | Defaults to buyer mode for quick selection. |
+| `locale` | `locale` | `string` | `'es'` | Regional language code. |
+| `rules` | — | `BlockingRule[]` | `[]` | Availability rules loaded from your database. |
+| `slots` | — | `TimeSlot[]` | *(9am to 6pm)* | Daily operating hour slots. |
+| `minDate` | `min-date` | `string` | `''` | Minimum selectable date (`YYYY-MM-DD`). |
+| `maxDate` | `max-date` | `string` | `''` | Maximum selectable date (`YYYY-MM-DD`). |
+| `hostTimezone` | `host-timezone` | `string` | `'America/Bogota'` | Host timezone reference. |
+| `activeTimezone` | `active-timezone` | `'host' \| 'local'` | `'local'` | Converts slot times to client local time when set to `'local'`. |
 
-### Eventos (Events)
+### Events
 
-| Nombre | Datos en `event.detail` | Descripción |
+| Event Name | Detail Payload (`event.detail`) | Description |
 | :--- | :--- | :--- |
-| **`booking-selected`** | `{ dateString, start, end, hostStart, hostEnd }` | El comprador seleccionó una fecha y hora. |
+| **`booking-selected`** | `{ dateString, start, end, hostStart, hostEnd }` | Fired when a slot is booked. |
 
 ---
 
-## 🎨 5. CSS Custom Properties y Shadow Parts
+## 🎨 5. CSS Custom Properties and Shadow Parts
 
-### Variables CSS (Paleta de Colores y Proporciones)
-Inserta estas variables en tu CSS principal para cambiar la apariencia del calendario:
+### CSS Variables (Theming)
+Customize the calendar theme by declaring these variables in your global CSS stylesheet:
 
 ```css
 glatam-calendar, glatam-calendar-mini {
-  --glatam-primary: #0071e3;            /* Color principal (Apple Blue) */
+  --glatam-primary: #0071e3;            /* Apple Blue branding color */
   --glatam-primary-hover: #0077ed;
-  --glatam-bg: #ffffff;                 /* Fondo principal de celdas */
-  --glatam-surface: #f5f5f7;            /* Cabeceras y botones */
-  --glatam-border: #e5e5ea;             /* Líneas divisorias */
-  --glatam-text: #1d1d1f;               /* Texto principal */
-  --glatam-text-secondary: #86868b;     /* Leyendas y subtextos */
+  --glatam-bg: #ffffff;                 /* Grid cell background */
+  --glatam-surface: #f5f5f7;            /* Header and button background */
+  --glatam-border: #e5e5ea;             /* Grid line color */
+  --glatam-text: #1d1d1f;               /* Primary text color */
+  --glatam-text-secondary: #86868b;     /* Subtexts and captions */
   --glatam-grid-border-radius: 12px;
 }
 ```
 
 ### CSS Shadow Parts
-Puedes aplicar estilos a las celdas mensuales desde tu CSS global usando el selector `::part()`.
+Target month cells from your global CSS using the `::part()` selector.
 
-Ejemplo para pintar los viernes con borde verde:
+Example to highlight Fridays with a green border:
 ```css
 glatam-calendar::part(casual-friday), glatam-calendar-mini::part(casual-friday) {
   border: 2px solid #34c759 !important;
@@ -119,9 +119,9 @@ glatam-calendar::part(casual-friday), glatam-calendar-mini::part(casual-friday) 
 
 ---
 
-## 💻 6. Ejemplos de Implementación en Frameworks
+## 💻 6. Integration Examples
 
-### A) HTML Puro + Vanilla JS
+### A) HTML + Vanilla JS
 ```html
 <glatam-calendar id="calendar" role="provider" min-date="2026-07-01"></glatam-calendar>
 
@@ -129,16 +129,16 @@ glatam-calendar::part(casual-friday), glatam-calendar-mini::part(casual-friday) 
   import '@glatam/calendar-ui';
   const cal = document.getElementById('calendar');
   cal.rules = [
-    { id: '1', type: 'weekly', daysOfWeek: [0, 6], description: 'Cerrado Fin de Semana' }
+    { id: '1', type: 'weekly', daysOfWeek: [0, 6], description: 'Closed on Weekends' }
   ];
   cal.addEventListener('rules-changed', (e) => {
-    console.log('Cambios guardados:', e.detail.rules);
+    console.log('Saved availability rules:', e.detail.rules);
   });
 </script>
 ```
 
 ### B) React 18 / Next.js
-*Para Next.js App Router, añade `"use client"` en la parte superior del archivo.*
+*For Next.js App Router, add `"use client"` at the top of the file.*
 
 ```tsx
 import { useEffect, useRef } from 'react';
@@ -149,26 +149,26 @@ export default function ReactCalendar() {
 
   useEffect(() => {
     if (ref.current) {
-      ref.current.rules = [{ id: 't1', type: 'date-range', startDate: '2026-07-25', description: 'Scrum' }];
+      ref.current.rules = [{ id: 't1', type: 'date-range', startDate: '2026-07-25', description: 'Daily Scrum' }];
       ref.current.tileClassName = ({ date }: { date: Date }) => date.getDay() === 5 ? 'casual-friday' : '';
     }
   }, []);
 
-  return <glatam-calendar ref={ref} role="buyer" locale="es" min-date="2026-07-18" />;
+  return <glatam-calendar ref={ref} role="buyer" locale="en" min-date="2026-07-18" />;
 }
 ```
 
 ### C) Vue 3
 ```html
 <template>
-  <glatam-calendar role="provider" locale="es" .rules="myRules" :tileClassName="styleFriday" @rules-changed="onSave" />
+  <glatam-calendar role="provider" locale="en" .rules="myRules" :tileClassName="styleFriday" @rules-changed="onSave" />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import '@glatam/calendar-ui';
 
-const myRules = ref([{ id: 'h1', type: 'date-range', startDate: '2026-07-28', description: 'Feriado' }]);
+const myRules = ref([{ id: 'h1', type: 'date-range', startDate: '2026-07-28', description: 'Holiday' }]);
 const styleFriday = ({ date }) => date.getDay() === 5 ? 'casual-friday' : '';
 const onSave = (e) => { myRules.value = e.detail.rules; };
 </script>
@@ -182,14 +182,14 @@ const onSave = (e) => { myRules.value = e.detail.rules; };
   let calElement;
 
   onMount(() => {
-    calElement.rules = [{ id: 's1', type: 'weekly', daysOfWeek: [0, 6], description: 'Cerrado' }];
+    calElement.rules = [{ id: 's1', type: 'weekly', daysOfWeek: [0, 6], description: 'Closed' }];
   });
 
   function handleBooking(e) {
     const { dateString, start } = e.detail;
-    alert(`Reservado para el ${dateString} a las ${start}`);
+    alert(`Booked for ${dateString} at ${start}`);
   }
 </script>
 
-<glatam-calendar bind:this={calElement} role="buyer" locale="es" on:booking-selected={handleBooking} />
+<glatam-calendar bind:this={calElement} role="buyer" locale="en" on:booking-selected={handleBooking} />
 ```
