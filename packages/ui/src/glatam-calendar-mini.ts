@@ -26,6 +26,47 @@ export class GlatamCalendarMini extends LitElement {
         box-shadow: none;
         width: 100%;
       }
+
+      .mini-calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 8px;
+        margin-bottom: 8px;
+        user-select: none;
+      }
+
+      .mini-month-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--glatam-text);
+        text-transform: capitalize;
+        letter-spacing: -0.01em;
+      }
+
+      .mini-nav-btn {
+        background: transparent;
+        border: 1px solid var(--glatam-border);
+        border-radius: 8px;
+        color: var(--glatam-text);
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: background-color var(--glatam-transition-fast), border-color var(--glatam-transition-fast), transform var(--glatam-transition-fast);
+      }
+
+      .mini-nav-btn:hover:not(:disabled) {
+        background-color: var(--glatam-surface);
+        border-color: var(--glatam-text-secondary);
+      }
+
+      .mini-nav-btn:active:not(:disabled) {
+        transform: scale(0.95);
+      }
     `
   ];
 
@@ -51,11 +92,57 @@ export class GlatamCalendarMini extends LitElement {
   @state() private dropdownOpen = false;
   @state() private dropdownSelectedDateString = '';
 
+  private touchStartX = 0;
+  private touchStartY = 0;
+
+  private handlePrevMonth(e: Event) {
+    e.stopPropagation();
+    const prev = new Date(this.activeDate);
+    prev.setMonth(prev.getMonth() - 1);
+    this.activeDate = prev;
+  }
+
+  private handleNextMonth(e: Event) {
+    e.stopPropagation();
+    const next = new Date(this.activeDate);
+    next.setMonth(next.getMonth() + 1);
+    this.activeDate = next;
+  }
+
+  private handleTouchStart(e: TouchEvent) {
+    if (e.touches && e.touches.length > 0) {
+      this.touchStartX = e.touches[0].clientX;
+      this.touchStartY = e.touches[0].clientY;
+    }
+  }
+
+  private handleTouchEnd(e: TouchEvent) {
+    if (e.changedTouches && e.changedTouches.length > 0) {
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const diffX = this.touchStartX - touchEndX;
+      const diffY = this.touchStartY - touchEndY;
+
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) {
+          this.handleNextMonth(e);
+        } else {
+          this.handlePrevMonth(e);
+        }
+      }
+    }
+  }
+
+  private getFormattedMonthTitle(): string {
+    const formatted = this.activeDate.toLocaleDateString(this.locale || 'es', { month: 'long', year: 'numeric' });
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+
   private handleDropdownDaySelect(e: CustomEvent<{ dateString: string }>) {
     this.dropdownSelectedDateString = e.detail.dateString;
   }
 
-  private selectDropdownSlot(slot: any) {
+  private selectDropdownSlot(slot: TimeSlot & { displayStart: string; displayEnd: string; isBlocked: boolean }) {
     const detail = {
       dateString: this.dropdownSelectedDateString,
       start: slot.displayStart,
@@ -103,19 +190,45 @@ export class GlatamCalendarMini extends LitElement {
               <div class="dropdown-card" style="--glatam-day-min-height: 38px;">
                 ${!this.dropdownSelectedDateString
                   ? html`
-                      <div style="font-weight:600; font-size:0.9rem; text-align:center; color: var(--glatam-text);">Selecciona un Día</div>
-                      <glatam-calendar-month-view
-                        .days=${generateMonthDays(y, m, this.rules, this.slots, this.startOfWeekDay)}
-                        .locale=${this.locale}
-                        .startOfWeekDay=${this.startOfWeekDay}
-                        .role=${this.role}
-                        size="small"
-                        .minDate=${this.minDate}
-                        .maxDate=${this.maxDate}
-                        .showNeighboringMonth=${this.showNeighboringMonth}
-                        .tileClassName=${this.tileClassName}
-                        @day-select=${this.handleDropdownDaySelect}
-                      ></glatam-calendar-month-view>
+                      <div class="mini-calendar-header">
+                        <button
+                          type="button"
+                          class="mini-nav-btn"
+                          aria-label="Mes anterior"
+                          @click=${this.handlePrevMonth}
+                        >
+                          &lt;
+                        </button>
+                        <span class="mini-month-title">
+                          ${this.getFormattedMonthTitle()}
+                        </span>
+                        <button
+                          type="button"
+                          class="mini-nav-btn"
+                          aria-label="Mes siguiente"
+                          @click=${this.handleNextMonth}
+                        >
+                          &gt;
+                        </button>
+                      </div>
+                      <div
+                        class="mini-calendar-touch-wrapper"
+                        @touchstart=${this.handleTouchStart}
+                        @touchend=${this.handleTouchEnd}
+                      >
+                        <glatam-calendar-month-view
+                          .days=${generateMonthDays(y, m, this.rules, this.slots, this.startOfWeekDay)}
+                          .locale=${this.locale}
+                          .startOfWeekDay=${this.startOfWeekDay}
+                          .role=${this.role}
+                          size="small"
+                          .minDate=${this.minDate}
+                          .maxDate=${this.maxDate}
+                          .showNeighboringMonth=${this.showNeighboringMonth}
+                          .tileClassName=${this.tileClassName}
+                          @day-select=${this.handleDropdownDaySelect}
+                        ></glatam-calendar-month-view>
+                      </div>
                     `
                   : html`
                       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glatam-border); padding-bottom:8px;">

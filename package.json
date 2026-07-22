@@ -1,6 +1,6 @@
 {
   "name": "glatam-calendar-monorepo",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Monorepo para la librería de calendario independiente @glatam/calendar",
   "private": true,
   "author": "Santiago Hernández Saldarriaga",

@@ -38,7 +38,11 @@ The primary calendar component displaying the full grid.
 
 ## ⚙️ 2. API Reference: `<glatam-calendar-mini>`
 
-The inline checkout popup calendar component.
+The inline checkout popup calendar component for compact booking dropdowns.
+
+### New Features in `v1.0.5`:
+- **Interactive Month Navigation**: Includes localized Month & Year header display with `<` and `>` control buttons.
+- **Mobile Touch & Swipe Support**: Native touch swipe gestures (`swipe left` for next month, `swipe right` for previous month) on mobile screens.
 
 ### Properties and Attributes (Props)
 

@@ -1,6 +1,6 @@
 {
   "name": "@glatam/calendar-core",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Lógica pura del calendario @glatam/calendar",
   "type": "module",
   "author": "Santiago Hernández Saldarriaga",
